@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-const JWT_SECRET = process.env.JWT_SECRET
+const JWT_SECRET = process.env.JWT_SECRET;
 
 export function verificarToken(req, res, next) {
   const authHeader = req.headers.authorization;
@@ -10,11 +10,20 @@ export function verificarToken(req, res, next) {
 
   const token = authHeader.split(" ")[1];
 
-  try {
-    const decoded = jwt.verify(token, JWT_SECRET);
-    req.usuario = decoded; 
+  jwt.verify(token, JWT_SECRET, (err, usuario) => {
+    if (err) {
+      return res.status(403).json({ erro: "Token inválido ou expirado" });
+    }
+    req.usuario = usuario;
     next();
-  } catch (error) {
-    return res.status(403).json({ erro: "Token inválido ou expirado" });
+  });
+}
+
+export function verificarAdmin(req, res, next) {
+  if (req.usuario.tipo_usuario !== "admin") {
+    return res
+      .status(403)
+      .json({ mensagem: "Acesso negado: apenas administradores" });
   }
+  next();
 }

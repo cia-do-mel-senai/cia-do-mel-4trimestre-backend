@@ -2,7 +2,8 @@ import express from "express";
 import cors from "cors";
 import UsuarioController from "./Controllers/UsuarioController.js";
 import AutenticacaoController from "./Controllers/AutenticacaoController.js";
-import { verificarToken } from "./middleware/autenticacao.js";
+import { verificarAdmin, verificarToken } from "./middleware/autenticacao.js";
+import ProdutoController from "./Controllers/ProdutoController.js";
 
 const app = express();
 app.use(express.json());
@@ -16,7 +17,18 @@ app.post("/usuario", usuarioController.cadastrar);
 const autenticacaoController = new AutenticacaoController();
 
 app.post("/login", autenticacaoController.logar);
-app.get("/perfil", verificarToken, autenticacaoController.pegarPerfil)
+app.get("/perfil", verificarToken, autenticacaoController.pegarPerfil);
+
+const produtoController = new ProdutoController();
+
+app.post(
+  "/produto",
+  verificarToken,
+  verificarAdmin,
+  produtoController.cadastrarProduto
+);
+app.get("/produto", produtoController.pegarProdutos);
+app.get("/produto/:id", produtoController.pegarProdutoPorId);
 
 app.listen(3000, () => {
   console.log("Servidor rodando na porta 3000");
