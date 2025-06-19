@@ -29,6 +29,12 @@ app.post(
 );
 app.get("/produto", produtoController.pegarProdutos);
 app.get("/produto/:id", produtoController.pegarProdutoPorId);
+app.put(
+  "/produto/:id",
+  verificarToken,
+  verificarAdmin,
+  produtoController.editarProduto
+);
 
 app.listen(3000, () => {
   console.log("Servidor rodando na porta 3000");
