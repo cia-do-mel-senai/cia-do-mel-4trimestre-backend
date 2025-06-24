@@ -56,6 +56,7 @@ class AutenticacaoController {
 
       const usuario = {
         tipo_usuario: usuarioEncontrado.tipo_usuario,
+        id: usuarioEncontrado.id,
       };
 
       res.status(200).json({ usuario });
