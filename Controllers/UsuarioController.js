@@ -1,5 +1,5 @@
 import pool from "../database/db.js";
-import bcrypt from "bcrypt"
+import bcrypt from "bcrypt";
 
 class UsuarioController {
   async pegarUsuarios(req, res) {

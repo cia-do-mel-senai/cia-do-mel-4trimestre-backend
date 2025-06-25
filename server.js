@@ -38,6 +38,12 @@ app.put(
   verificarAdmin,
   produtoController.editarProduto
 );
+app.delete(
+  "/produto/:id",
+  verificarToken,
+  verificarAdmin,
+  produtoController.excluirProduto
+);
 
 const pedidosController = new PedidosController();
 
@@ -59,3 +65,5 @@ app.patch(
 app.listen(3000, () => {
   console.log("Servidor rodando na porta 3000");
 });
+
+export default app;
