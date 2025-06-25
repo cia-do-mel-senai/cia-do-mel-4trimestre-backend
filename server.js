@@ -14,7 +14,6 @@ app.use(cors("*"));
 
 const usuarioController = new UsuarioController();
 
-app.get("/usuario", usuarioController.pegarUsuarios);
 app.post("/usuario", usuarioController.cadastrar);
 
 const autenticacaoController = new AutenticacaoController();

@@ -20,7 +20,7 @@ class ProdutoController {
     }
 
     try {
-      const resposta = pool.query(
+      const resposta = await pool.query(
         "INSERT INTO produtos (nome, preco, descricao, imagem, categoria_id) VALUES ($1, $2, $3, $4, $5)",
         [nome, preco, descricao, imagem, categoria_id]
       );
@@ -47,7 +47,7 @@ class ProdutoController {
   async pegarProdutoPorId(req, res) {
     const { id } = req.params;
 
-    if (!id) {
+    if (!id || isNaN(Number(id))) {
       res.status(400).json({ error: "ID do produto é obrigatório." });
       return;
     }
@@ -66,6 +66,7 @@ class ProdutoController {
       const produto = resposta.rows[0];
 
       res.status(200).json(produto);
+      return;
     } catch (error) {
       console.log(error);
       res.status(500).json({ erro: "Erro interno no servidor" });
@@ -76,7 +77,7 @@ class ProdutoController {
     const { id } = req.params;
     const { nome, preco, descricao, imagem, categoria_id } = req.body;
 
-    if (!id) {
+    if (!id || isNaN(Number(id))) {
       res.status(400).json({ error: "ID do produto é obrigatório." });
       return;
     }
@@ -118,7 +119,7 @@ class ProdutoController {
   async excluirProduto(req, res) {
     const { id } = req.params;
 
-    if (!id) {
+    if (!id || isNaN(Number(id))) {
       res.status(400).json({ error: "ID do produto é obrigatório." });
       return;
     }
@@ -134,6 +135,7 @@ class ProdutoController {
       }
 
       res.status(200).json({ mensagem: "Produto excluído com sucesso." });
+      return;
     } catch (error) {
       console.log(error);
       res.status(500).json({ erro: "Erro interno no servidor" });

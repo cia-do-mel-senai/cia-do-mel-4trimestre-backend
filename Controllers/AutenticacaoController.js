@@ -8,6 +8,13 @@ class AutenticacaoController {
   async logar(req, res) {
     const { email, senha } = req.body;
 
+    if (email.trim() === "" || senha.trim() === "") {
+      res.status(400).json({
+        error: "Dados inválidos. Confira os campos e tente novamente.",
+      });
+      return;
+    }
+
     try {
       const resultado = await pool.query(
         "SELECT * FROM usuarios WHERE email = $1",
@@ -32,10 +39,11 @@ class AutenticacaoController {
         { expiresIn: "2h" }
       );
 
-      return res.status(200).json({ mensagem: "Login bem-sucedido", token });
+      res.status(200).json({ mensagem: "Login bem-sucedido", token });
+      return;
     } catch (error) {
       console.log(error);
-      res.status(500).json("Erro interno no servidor");
+      res.status(500).json({ erro: "Erro interno no servidor" });
     }
   }
 
@@ -49,7 +57,8 @@ class AutenticacaoController {
       );
 
       if (resultado.rows.length === 0) {
-        return res.status(404).json({ erro: "Usuário não encontrado" });
+        res.status(404).json({ erro: "Usuário não encontrado" });
+        return;
       }
 
       const usuarioEncontrado = resultado.rows[0];
@@ -60,9 +69,10 @@ class AutenticacaoController {
       };
 
       res.status(200).json({ usuario });
+      return;
     } catch (error) {
       console.error(error);
-      res.status(500).json({ erro: "Erro interno do servidor" });
+      res.status(500).json({ erro: "Erro interno no servidor" });
     }
   }
 }

@@ -4,6 +4,12 @@ class PedidosController {
   async criarPedido(req, res) {
     const { valor_total } = req.body;
 
+    if (isNaN(Number(valor_total)) || valor_total < 0.1) {
+      res.status(400).json({
+        error: "Valor total inválido.",
+      });
+      return;
+    }
     try {
       await pool.query(
         "INSERT INTO pedidos (codigo_pedido, usuario_id, data_criacao, status, valor_total) VALUES ($1, $2, $3, $4, $5)",
@@ -16,7 +22,7 @@ class PedidosController {
         ]
       );
 
-      res.status(200).json("Pedido feito com sucesso");
+      res.status(201).json({ mensagem: "Pedido feito com sucesso" });
     } catch (error) {
       console.log(error);
       res.status(500).json({ erro: "Erro interno no servidor" });
@@ -25,6 +31,11 @@ class PedidosController {
 
   async pegarPedidosPorId(req, res) {
     const { id } = req.params;
+
+    if (!id || isNaN(Number(id))) {
+      res.status(400).json({ error: "ID do produto é obrigatório." });
+      return;
+    }
 
     try {
       const resposta = await pool.query(
@@ -54,11 +65,32 @@ class PedidosController {
     const { status } = req.body;
     const { id } = req.params;
 
+    if (!id || isNaN(Number(id))) {
+      res.status(400).json({ error: "ID do produto é obrigatório." });
+      return;
+    }
+
+    if (
+      ![
+        "Pedido realizado",
+        "Pedido em preparo",
+        "Pedido enviado",
+        "Pedido entregue",
+        "Pedido cancelado",
+      ].includes(status)
+    ) {
+      res.status(400).json({ error: "Status inválido." });
+      return;
+    }
     try {
       const resposta = await pool.query(
         "UPDATE pedidos SET status = $1 WHERE id = $2;",
         [status, id]
       );
+
+      if (resposta.rowCount === 0) {
+        return res.status(404).json({ error: "Pedido não encontrado." });
+      }
 
       res.status(200).json({ mensagem: "Status atualizado com sucesso" });
     } catch (error) {
