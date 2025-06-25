@@ -2,9 +2,10 @@
   "name": "cia-do-mel-3trimestre-backend",
   "version": "1.0.0",
   "description": "",
+  "type": "module",
   "main": "index.js",
   "scripts": {
-  "test": "cross-env NODE_ENV=test jest",
+    "test": "jest",
     "dev": "nodemon server.js"
   },
   "repository": {
@@ -24,12 +25,15 @@
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
-    "nodemon": "^3.1.10",
     "pg": "^8.16.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.27.4",
+    "@babel/preset-env": "^7.27.2",
+    "babel-jest": "^30.0.2",
     "cross-env": "^7.0.3",
     "jest": "^30.0.2",
+    "nodemon": "^3.1.10",
     "supertest": "^7.1.1"
   }
 }

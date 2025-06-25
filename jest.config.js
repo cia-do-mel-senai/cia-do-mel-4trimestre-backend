@@ -1,7 +1,4 @@
-// jest.config.js
-module.exports = {
+export default {
   testEnvironment: "node",
-  clearMocks: true,
-  collectCoverage: true,
-  coverageDirectory: "coverage",
+  transform: { "^.+\\.js$": "babel-jest" },
 };
