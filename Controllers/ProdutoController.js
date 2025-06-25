@@ -25,9 +25,8 @@ class ProdutoController {
         [nome, preco, descricao, imagem, categoria_id]
       );
 
-      return res
-        .status(201)
-        .json({ mensagem: "Produto cadastrado com sucesso." });
+      res.status(201).json({ mensagem: "Produto cadastrado com sucesso." });
+      return;
     } catch (error) {
       console.log(error);
       res.status(500).json({ erro: "Erro interno no servidor" });
@@ -37,7 +36,8 @@ class ProdutoController {
   async pegarProdutos(req, res) {
     try {
       const resposta = await pool.query("SELECT * FROM produtos");
-      res.status(200).json(resposta.rows);
+      const produtos = resposta.rows;
+      res.status(200).json(produtos);
     } catch (error) {
       console.log(error);
       res.status(500).json({ erro: "Erro interno no servidor" });

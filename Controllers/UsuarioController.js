@@ -19,7 +19,7 @@ class UsuarioController {
     try {
       const senhaCriptografada = await bcrypt.hash(senha, 12);
 
-      const resultado = await pool.query(
+      await pool.query(
         "INSERT INTO usuarios (nome, email, telefone, senha, tipo_usuario) VALUES ($1, $2, $3, $4, $5)",
         [nome, email, telefone, senhaCriptografada, "usuario"]
       );

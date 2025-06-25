@@ -10,6 +10,7 @@ class PedidosController {
       });
       return;
     }
+
     try {
       await pool.query(
         "INSERT INTO pedidos (codigo_pedido, usuario_id, data_criacao, status, valor_total) VALUES ($1, $2, $3, $4, $5)",

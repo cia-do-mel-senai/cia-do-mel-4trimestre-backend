@@ -1,0 +1,51 @@
+-- Usuários
+CREATE TABLE usuarios (
+    id SERIAL PRIMARY KEY,
+    nome TEXT NOT NULL,
+    email TEXT UNIQUE NOT NULL,
+    telefone TEXT,
+    senha TEXT NOT NULL,
+    tipo_usuario TEXT CHECK (tipo_usuario IN ('usuario', 'admin')) NOT NULL
+);
+
+-- Categorias
+CREATE TABLE categorias (
+    id SERIAL PRIMARY KEY,
+    nome TEXT NOT NULL UNIQUE
+);
+
+-- Produtos
+CREATE TABLE produtos (
+    id SERIAL PRIMARY KEY,
+    nome TEXT NOT NULL,
+    preco NUMERIC(10, 2) NOT NULL,
+    descricao TEXT,
+    imagem TEXT, -- pode ser uma URL ou base64
+    categoria_id INTEGER REFERENCES categorias(id) ON DELETE SET NULL
+);
+
+-- Avaliações de produtos
+CREATE TABLE avaliacoes (
+    id SERIAL PRIMARY KEY,
+    usuario_id INTEGER REFERENCES usuarios(id) ON DELETE SET NULL,
+    produto_id INTEGER REFERENCES produtos(id) ON DELETE CASCADE,
+    nota INTEGER NOT NULL CHECK (nota >= 1 AND nota <= 5),
+    UNIQUE (usuario_id, produto_id)
+    -- comentario TEXT -- pode ser adicionado depois
+);
+
+-- Pedidos
+CREATE TABLE pedidos (
+    id SERIAL PRIMARY KEY,
+    codigo_pedido TEXT UNIQUE NOT NULL, -- visível ao usuário
+    usuario_id INTEGER REFERENCES usuarios(id),
+    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status TEXT CHECK (status IN (
+        'Pedido realizado',
+        'Pedido em preparo',
+        'Pedido enviado',
+        'Pedido entregue',
+        'Pedido cancelado'
+    )) NOT NULL,
+    valor_total NUMERIC(10, 2) NOT NULL
+);
