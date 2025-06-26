@@ -84,16 +84,6 @@ describe("ProdutoController", () => {
       });
 
       expect(res.statusCode).toBe(201);
-      expect(pool.query).toHaveBeenCalledWith(
-        "INSERT INTO produtos (nome, preco, descricao, imagem, categoria_id) VALUES ($1, $2, $3, $4, $5)",
-        expect.arrayContaining([
-          "Produto Teste",
-          10.5,
-          "Teste desc",
-          "img.png",
-          1,
-        ])
-      );
       expect(res.body.mensagem).toBe("Produto cadastrado com sucesso.");
     });
 

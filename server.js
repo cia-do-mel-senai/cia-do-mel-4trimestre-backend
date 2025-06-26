@@ -30,6 +30,7 @@ app.post(
   produtoController.cadastrarProduto
 );
 app.get("/produto", produtoController.pegarProdutos);
+app.get("/produto/ultimos", produtoController.ultimosProdutos);
 app.get("/produto/:id", produtoController.pegarProdutoPorId);
 app.put(
   "/produto/:id",

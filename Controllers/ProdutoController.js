@@ -20,7 +20,7 @@ class ProdutoController {
     }
 
     try {
-      const resposta = await pool.query(
+      await pool.query(
         "INSERT INTO produtos (nome, preco, descricao, imagem, categoria_id) VALUES ($1, $2, $3, $4, $5)",
         [nome, preco, descricao, imagem, categoria_id]
       );
@@ -139,6 +139,17 @@ class ProdutoController {
     } catch (error) {
       console.log(error);
       res.status(500).json({ erro: "Erro interno no servidor" });
+    }
+  }
+
+  async ultimosProdutos(req, res) {
+    try {
+      const resposta = await pool.query(
+        "SELECT * FROM produtos ORDER BY id DESC LIMIT 3"
+      );
+      res.status(200).json(resposta.rows);
+    } catch (err) {
+      res.status(500).json({ erro: "Erro ao buscar os produtos" });
     }
   }
 }
