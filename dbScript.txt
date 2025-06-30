@@ -49,3 +49,5 @@ CREATE TABLE pedidos (
     )) NOT NULL,
     valor_total NUMERIC(10, 2) NOT NULL
 );
+
+INSERT INTO categorias(nome) VALUES ('alimentos', 'saude')
