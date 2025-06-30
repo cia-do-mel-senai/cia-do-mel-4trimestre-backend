@@ -69,6 +69,7 @@ const produtosInvalidos = [
 ];
 
 describe("ProdutoController", () => {
+ 
   describe("Cadastro de produto", () => {
     test("Deve cadastrar produto com sucesso", async () => {
       pool.query.mockResolvedValueOnce({
