@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import UsuarioController from "./Controllers/UsuarioController.js";
 import AutenticacaoController from "./Controllers/AutenticacaoController.js";
-import { verificarAdmin, verificarToken } from "./middleware/autenticacao.js";
+import { verificarToken } from "./middleware/autenticacao.js";
 import ProdutoController from "./Controllers/ProdutoController.js";
 import PedidosController from "./Controllers/PedidosController.js";
 
@@ -23,25 +23,20 @@ app.get("/perfil", verificarToken, autenticacaoController.pegarPerfil);
 
 const produtoController = new ProdutoController();
 
-app.post(
-  "/produto",
-  verificarToken,
-  verificarAdmin,
-  produtoController.cadastrarProduto
-);
+app.post("/produto", verificarToken, produtoController.cadastrarProduto);
 app.get("/produto", produtoController.pegarProdutos);
 app.get("/produto/ultimos", produtoController.ultimosProdutos);
 app.get("/produto/:id", produtoController.pegarProdutoPorId);
 app.put(
   "/produto/:id",
   verificarToken,
-  verificarAdmin,
+
   produtoController.editarProduto
 );
 app.delete(
   "/produto/:id",
   verificarToken,
-  verificarAdmin,
+
   produtoController.excluirProduto
 );
 
@@ -51,14 +46,14 @@ app.post("/pedidos", verificarToken, pedidosController.criarPedido);
 app.get(
   "/pedidos",
   verificarToken,
-  verificarAdmin,
+
   pedidosController.pegarPedidos
 );
 app.get("/pedidos/:id", verificarToken, pedidosController.pegarPedidosPorId);
 app.patch(
   "/pedidos/:id",
   verificarToken,
-  verificarAdmin,
+
   pedidosController.atualizarStatusPedido
 );
 

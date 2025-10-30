@@ -17,7 +17,7 @@ class AutenticacaoController {
 
     try {
       const resultado = await pool.query(
-        "SELECT * FROM usuarios WHERE email = $1",
+        "SELECT * FROM gestores WHERE email = $1",
         [email]
       );
 
@@ -33,11 +33,9 @@ class AutenticacaoController {
         return res.status(401).json({ erro: "Email ou senha inválidos" });
       }
 
-      const token = jwt.sign(
-        { id: usuario.id, tipo_usuario: usuario.tipo_usuario },
-        JWT_SECRET,
-        { expiresIn: "2h" }
-      );
+      const token = jwt.sign({ id: usuario.id }, JWT_SECRET, {
+        expiresIn: "2h",
+      });
 
       res.status(200).json({ mensagem: "Login bem-sucedido", token });
       return;
@@ -52,7 +50,7 @@ class AutenticacaoController {
       const usuarioId = req.usuario.id;
 
       const resultado = await pool.query(
-        "SELECT * FROM usuarios WHERE id = $1",
+        "SELECT * FROM gestores WHERE id = $1",
         [usuarioId]
       );
 

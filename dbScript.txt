@@ -1,38 +1,35 @@
--- Usuários
-CREATE TABLE usuarios (
-    id SERIAL PRIMARY KEY,
-    nome TEXT NOT NULL,
-    email TEXT UNIQUE NOT NULL,
-    telefone TEXT,
-    senha TEXT NOT NULL,
-    tipo_usuario TEXT CHECK (tipo_usuario IN ('usuario', 'admin')) NOT NULL
-);
-
--- Categorias
-CREATE TABLE categorias (
-    id SERIAL PRIMARY KEY,
-    nome TEXT NOT NULL UNIQUE
-);
+-- Gestores
+CREATE TABLE gestores (
+id SERIAL PRIMARY KEY,
+nome TEXT NOT NULL,
+email TEXT UNIQUE NOT NULL,
+telefone TEXT,
+senha TEXT NOT NULL
+)
 
 -- Produtos
+-- 1️⃣ Criação dos tipos ENUM
+CREATE TYPE tamanho_enum AS ENUM ('Pequeno', 'Médio', 'Grande');
+CREATE TYPE rotulo_enum AS ENUM ('Sem rótulo', 'Padrão', 'Personalizado');
+CREATE TYPE tipo_embalagem_enum AS ENUM ('Vidro', 'Plástico', 'Acrílico');
+CREATE TYPE cor_tampa_enum AS ENUM ('Verde', 'Laranja', 'Roxo');
+CREATE TYPE acabamento_superficie_enum AS ENUM ('Fosco', 'Brilhante', 'Texturizado');
+
+-- 2️⃣ Criação da tabela produtos
 CREATE TABLE produtos (
     id SERIAL PRIMARY KEY,
     nome TEXT NOT NULL,
     preco NUMERIC(10, 2) NOT NULL,
     descricao TEXT,
     imagem TEXT, -- pode ser uma URL ou base64
-    categoria_id INTEGER REFERENCES categorias(id) ON DELETE SET NULL
+
+    tamanho tamanho_enum NOT NULL,
+    rotulo rotulo_enum NOT NULL,
+    tipo_embalagem tipo_embalagem_enum NOT NULL,
+    cor_tampa cor_tampa_enum NOT NULL,
+    acabamento_superficie acabamento_superficie_enum NOT NULL
 );
 
--- Avaliações de produtos
-CREATE TABLE avaliacoes (
-    id SERIAL PRIMARY KEY,
-    usuario_id INTEGER REFERENCES usuarios(id) ON DELETE SET NULL,
-    produto_id INTEGER REFERENCES produtos(id) ON DELETE CASCADE,
-    nota INTEGER NOT NULL CHECK (nota >= 1 AND nota <= 5),
-    UNIQUE (usuario_id, produto_id)
-    -- comentario TEXT -- pode ser adicionado depois
-);
 
 -- Pedidos
 CREATE TABLE pedidos (
@@ -50,5 +47,30 @@ CREATE TABLE pedidos (
     valor_total NUMERIC(10, 2) NOT NULL
 );
 
-INSERT INTO categorias(nome) VALUES ('alimentos');
-INSERT INTO categorias(nome) VALUES ('saude');
+
+
+Tamanho:
+ Pequeno
+ Médio
+ Grande
+
+Rotulo:
+ Sem rotulo
+ Padrão
+ Personalizado
+
+Tipo embalagem:
+ vidro
+ Plastico
+ Acrilico
+ *Sachet
+
+Cor da tampa: 
+ Verde
+ Laranja
+ Roxo
+
+Acabamento da superfície:
+ Fosco
+ Brilhante
+ Texturizado

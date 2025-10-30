@@ -2,34 +2,60 @@ import pool from "../database/db.js";
 
 class ProdutoController {
   async cadastrarProduto(req, res) {
-    const { nome, preco, descricao, imagem, categoria_id } = req.body;
+    const {
+      nome,
+      preco,
+      descricao,
+      imagem,
+      tamanho,
+      rotulo,
+      tipo_embalagem,
+      cor_tampa,
+      acabamento_superficie,
+    } = req.body;
 
     if (
       nome.trim() === "" ||
+      isNaN(Number(preco)) ||
       Number(preco) < 0.1 ||
       Number(preco) > 1000000 ||
-      isNaN(Number(preco)) ||
       descricao.trim() === "" ||
       imagem.trim() === "" ||
-      ![1, 2].includes(Number(categoria_id))
+      !["Pequeno", "Médio", "Grande"].includes(tamanho) ||
+      !["Sem rótulo", "Padrão", "Personalizado"].includes(rotulo) ||
+      !["Vidro", "Plástico", "Acrílico"].includes(tipo_embalagem) ||
+      !["Verde", "Laranja", "Roxo"].includes(cor_tampa) ||
+      !["Fosco", "Brilhante", "Texturizado"].includes(acabamento_superficie)
     ) {
-      res.status(400).json({
-        error: "Dados inválidos. Confira os campos e tente novamente.",
+      return res.status(400).json({
+        erro: "Dados inválidos. Confira os campos e tente novamente.",
       });
-      return;
     }
 
     try {
       await pool.query(
-        "INSERT INTO produtos (nome, preco, descricao, imagem, categoria_id) VALUES ($1, $2, $3, $4, $5)",
-        [nome, preco, descricao, imagem, categoria_id]
+        `INSERT INTO produtos
+        (nome, preco, descricao, imagem, tamanho, rotulo, tipo_embalagem, cor_tampa, acabamento_superficie)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+        [
+          nome,
+          preco,
+          descricao,
+          imagem,
+          tamanho,
+          rotulo,
+          tipo_embalagem,
+          cor_tampa,
+          acabamento_superficie,
+        ]
       );
 
-      res.status(201).json({ mensagem: "Produto cadastrado com sucesso." });
-      return;
+      return res
+        .status(201)
+        .json({ mensagem: "Produto cadastrado com sucesso." });
     } catch (error) {
       console.log(error);
-      res.status(500).json({ erro: "Erro interno no servidor" });
+      return res.status(500).json({ erro: "Erro interno no servidor" });
     }
   }
 
@@ -75,32 +101,62 @@ class ProdutoController {
 
   async editarProduto(req, res) {
     const { id } = req.params;
-    const { nome, preco, descricao, imagem, categoria_id } = req.body;
+    const {
+      nome,
+      preco,
+      descricao,
+      imagem,
+      tamanho,
+      rotulo,
+      tipo_embalagem,
+      cor_tampa,
+      acabamento_superficie,
+    } = req.body;
 
     if (!id || isNaN(Number(id))) {
       res.status(400).json({ error: "ID do produto é obrigatório." });
       return;
     }
 
+    // Validação dos campos
     if (
-      nome.trim() === "" ||
-      Number(preco) <= 0.1 ||
-      Number(preco) >= 1000000 ||
+      !nome.trim() ||
       isNaN(Number(preco)) ||
-      descricao.trim() === "" ||
-      imagem.trim() === "" ||
-      ![1, 2].includes(categoria_id)
+      Number(preco) < 0.1 ||
+      Number(preco) > 1000000 ||
+      !descricao.trim() ||
+      !imagem.trim() ||
+      !tamanho ||
+      !rotulo ||
+      !tipo_embalagem ||
+      !cor_tampa ||
+      !acabamento_superficie
     ) {
       res.status(400).json({
-        error: "Dados inválidos. Confira os campos e tente novamente.",
+        error: "Dados inválidos. Confira todos os campos e tente novamente.",
       });
       return;
     }
 
     try {
       const resposta = await pool.query(
-        "UPDATE produtos SET nome = $1, preco = $2, descricao = $3, imagem = $4, categoria_id = $5 WHERE id = $6 RETURNING *",
-        [nome, preco, descricao, imagem, categoria_id, id]
+        `UPDATE produtos 
+         SET nome = $1, preco = $2, descricao = $3, imagem = $4,
+             tamanho = $5, rotulo = $6, tipo_embalagem = $7, cor_tampa = $8, acabamento_superficie = $9
+         WHERE id = $10
+         RETURNING *`,
+        [
+          nome,
+          preco,
+          descricao,
+          imagem,
+          tamanho,
+          rotulo,
+          tipo_embalagem,
+          cor_tampa,
+          acabamento_superficie,
+          id,
+        ]
       );
 
       if (resposta.rowCount === 0) {
@@ -109,7 +165,6 @@ class ProdutoController {
       }
 
       res.status(200).json({ mensagem: "Produto editado com sucesso." });
-      return;
     } catch (error) {
       console.log(error);
       res.status(500).json({ erro: "Erro interno no servidor" });

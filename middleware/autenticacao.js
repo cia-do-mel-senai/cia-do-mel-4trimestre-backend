@@ -18,12 +18,3 @@ export function verificarToken(req, res, next) {
     next();
   });
 }
-
-export function verificarAdmin(req, res, next) {
-  if (req.usuario.tipo_usuario !== "admin") {
-    return res
-      .status(403)
-      .json({ mensagem: "Acesso negado: apenas administradores" });
-  }
-  next();
-}
