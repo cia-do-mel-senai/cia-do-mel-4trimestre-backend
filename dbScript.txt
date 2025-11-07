@@ -35,7 +35,7 @@ CREATE TABLE produtos (
 CREATE TABLE pedidos (
     id SERIAL PRIMARY KEY,
     codigo_pedido TEXT UNIQUE NOT NULL, -- visível ao usuário
-    usuario_id INTEGER REFERENCES usuarios(id),
+    gestor_id INTEGER REFERENCES gestores(id),
     data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     status TEXT CHECK (status IN (
         'Pedido realizado',
@@ -44,7 +44,8 @@ CREATE TABLE pedidos (
         'Pedido entregue',
         'Pedido cancelado'
     )) NOT NULL,
-    valor_total NUMERIC(10, 2) NOT NULL
+    quantidade INTEGER NOT NULL,
+    produto_nome TEXT NOT NULL
 );
 
 

@@ -2,24 +2,25 @@ import pool from "../database/db.js";
 
 class PedidosController {
   async criarPedido(req, res) {
-    const { valor_total } = req.body;
+    const { quantidade, produtoNome } = req.body;
 
-    if (isNaN(Number(valor_total)) || valor_total < 0.1) {
+    if (isNaN(Number(quantidade)) || quantidade < 1) {
       res.status(400).json({
-        error: "Valor total inválido.",
+        error: "Quantidade inválida.",
       });
       return;
     }
 
     try {
       await pool.query(
-        "INSERT INTO pedidos (codigo_pedido, usuario_id, data_criacao, status, valor_total) VALUES ($1, $2, $3, $4, $5)",
+        "INSERT INTO pedidos (codigo_pedido, gestor_id, data_criacao, status, quantidade, produto_nome) VALUES ($1, $2, $3, $4, $5, $6)",
         [
           Date.now(),
           req.usuario.id,
           new Date(),
           "Pedido realizado",
-          Number(valor_total),
+          Number(quantidade),
+          produtoNome,
         ]
       );
 
