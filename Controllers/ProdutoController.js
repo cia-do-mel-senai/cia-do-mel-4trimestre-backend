@@ -1,5 +1,24 @@
 import pool from "../database/db.js";
 
+const mapEnumsToCodes = {
+  tamanho: { Pequeno: 1, Médio: 2, Grande: 3 },
+  rotulo: { "Sem rótulo": 1, Padrão: 2, Personalizado: 3 },
+  tipo_embalagem: { Vidro: 1, Plástico: 2, Acrílico: 3 },
+  cor_tampa: { Verde: 1, Laranja: 2, Roxo: 3 },
+  acabamento_superficie: { Fosco: "A1", Brilhante: "B1", Texturizado: "C1" },
+};
+
+function traduzirParaBloco(produto) {
+  return {
+    cor: mapEnumsToCodes.tamanho[produto.tamanho],
+    lamina1: mapEnumsToCodes.rotulo[produto.rotulo],
+    lamina2: mapEnumsToCodes.tipo_embalagem[produto.tipo_embalagem],
+    lamina3: mapEnumsToCodes.cor_tampa[produto.cor_tampa],
+    padrao1:
+      mapEnumsToCodes.acabamento_superficie[produto.acabamento_superficie],
+  };
+}
+
 class ProdutoController {
   async cadastrarProduto(req, res) {
     const {
@@ -32,11 +51,21 @@ class ProdutoController {
       });
     }
 
+    const produto = {
+      tamanho,
+      rotulo,
+      tipo_embalagem,
+      cor_tampa,
+      acabamento_superficie,
+    };
+
+    const bloco = traduzirParaBloco(produto);
+
     try {
       await pool.query(
         `INSERT INTO produtos
-        (nome, preco, descricao, imagem, tamanho, rotulo, tipo_embalagem, cor_tampa, acabamento_superficie)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+        (nome, preco, descricao, imagem, tamanho, rotulo, tipo_embalagem, cor_tampa, acabamento_superficie, bloco)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
         [
           nome,
           preco,
@@ -47,6 +76,7 @@ class ProdutoController {
           tipo_embalagem,
           cor_tampa,
           acabamento_superficie,
+          bloco,
         ]
       );
 
@@ -138,12 +168,22 @@ class ProdutoController {
       return;
     }
 
+    const produto = {
+      tamanho,
+      rotulo,
+      tipo_embalagem,
+      cor_tampa,
+      acabamento_superficie,
+    };
+
+    const bloco = traduzirParaBloco(produto);
+
     try {
       const resposta = await pool.query(
         `UPDATE produtos 
          SET nome = $1, preco = $2, descricao = $3, imagem = $4,
-             tamanho = $5, rotulo = $6, tipo_embalagem = $7, cor_tampa = $8, acabamento_superficie = $9
-         WHERE id = $10
+             tamanho = $5, rotulo = $6, tipo_embalagem = $7, cor_tampa = $8, acabamento_superficie = $9, bloco = $10
+         WHERE id = $11
          RETURNING *`,
         [
           nome,
@@ -155,6 +195,7 @@ class ProdutoController {
           tipo_embalagem,
           cor_tampa,
           acabamento_superficie,
+          bloco,
           id,
         ]
       );

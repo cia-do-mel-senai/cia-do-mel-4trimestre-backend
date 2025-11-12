@@ -5,7 +5,7 @@ nome TEXT NOT NULL,
 email TEXT UNIQUE NOT NULL,
 telefone TEXT,
 senha TEXT NOT NULL
-)
+);
 
 -- Produtos
 -- 1️⃣ Criação dos tipos ENUM
@@ -27,7 +27,8 @@ CREATE TABLE produtos (
     rotulo rotulo_enum NOT NULL,
     tipo_embalagem tipo_embalagem_enum NOT NULL,
     cor_tampa cor_tampa_enum NOT NULL,
-    acabamento_superficie acabamento_superficie_enum NOT NULL
+    acabamento_superficie acabamento_superficie_enum NOT NULL,
+    bloco JSONB NOT NULL
 );
 
 
@@ -36,17 +37,13 @@ CREATE TABLE pedidos (
     id SERIAL PRIMARY KEY,
     codigo_pedido TEXT UNIQUE NOT NULL, -- visível ao usuário
     gestor_id INTEGER REFERENCES gestores(id),
+    produto_id INTEGER REFERENCES produtos(id),
     data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    status TEXT CHECK (status IN (
-        'Pedido realizado',
-        'Pedido em preparo',
-        'Pedido enviado',
-        'Pedido entregue',
-        'Pedido cancelado'
-    )) NOT NULL,
-    quantidade INTEGER NOT NULL,
-    produto_nome TEXT NOT NULL
+    status TEXT NOT NULL,
+    quantidade INTEGER NOT NULL
 );
+
+INSERT INTO gestores(nome, email, senha) VALUES ('admin', 'admin', '$2a$12$40/j6Jl/WL7FW97lLzEhs./nXLJC49yWN./oJ8UGMOcCv2g0H4Fxy')
 
 
 

@@ -50,12 +50,7 @@ app.get(
   pedidosController.pegarPedidos
 );
 app.get("/pedidos/:id", verificarToken, pedidosController.pegarPedidosPorId);
-app.patch(
-  "/pedidos/:id",
-  verificarToken,
-
-  pedidosController.atualizarStatusPedido
-);
+app.patch("/pedidos/:id", pedidosController.atualizarStatusPedido);
 
 app.listen(3000, () => {
   console.log("Servidor rodando na porta 3000");
