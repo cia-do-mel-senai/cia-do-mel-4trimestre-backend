@@ -10,7 +10,7 @@ senha TEXT NOT NULL
 -- Produtos
 -- 1️⃣ Criação dos tipos ENUM
 CREATE TYPE tamanho_enum AS ENUM ('Pequeno', 'Médio', 'Grande');
-CREATE TYPE rotulo_enum AS ENUM ('Sem rótulo', 'Padrão', 'Personalizado');
+CREATE TYPE rotulo_enum AS ENUM ('Sem rótulo', 'Preto', 'Branco');
 CREATE TYPE tipo_embalagem_enum AS ENUM ('Vidro', 'Plástico', 'Acrílico');
 CREATE TYPE cor_tampa_enum AS ENUM ('Verde', 'Laranja', 'Roxo');
 CREATE TYPE acabamento_superficie_enum AS ENUM ('Fosco', 'Brilhante', 'Texturizado');
@@ -41,34 +41,8 @@ CREATE TABLE pedidos (
     data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     status TEXT NOT NULL,
     quantidade INTEGER NOT NULL
+    pedido_bancada_id TEXT 
 );
 
 INSERT INTO gestores(nome, email, senha) VALUES ('admin', 'admin', '$2a$12$40/j6Jl/WL7FW97lLzEhs./nXLJC49yWN./oJ8UGMOcCv2g0H4Fxy')
 
-
-
-Tamanho:
- Pequeno
- Médio
- Grande
-
-Rotulo:
- Sem rotulo
- Padrão
- Personalizado
-
-Tipo embalagem:
- vidro
- Plastico
- Acrilico
- *Sachet
-
-Cor da tampa: 
- Verde
- Laranja
- Roxo
-
-Acabamento da superfície:
- Fosco
- Brilhante
- Texturizado

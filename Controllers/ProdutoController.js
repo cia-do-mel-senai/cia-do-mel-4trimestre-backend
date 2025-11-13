@@ -1,19 +1,19 @@
 import pool from "../database/db.js";
 
 const mapEnumsToCodes = {
-  tamanho: { Pequeno: 1, Médio: 2, Grande: 3 },
-  rotulo: { "Sem rótulo": 1, Padrão: 2, Personalizado: 3 },
+  tamanho: { Pequeno: "Pequeno", Médio: "Médio", Grande: "Grande" },
+  rotulo: { "Sem rótulo": 1, Preto: 2, Branco: 3 },
   tipo_embalagem: { Vidro: 1, Plástico: 2, Acrílico: 3 },
-  cor_tampa: { Verde: 1, Laranja: 2, Roxo: 3 },
+  cor_tampa: { Verde: "azul", Laranja: "vermelho", Roxo: "amarelo" },
   acabamento_superficie: { Fosco: "A1", Brilhante: "B1", Texturizado: "C1" },
 };
 
 function traduzirParaBloco(produto) {
   return {
-    cor: mapEnumsToCodes.tamanho[produto.tamanho],
+    tamanho: mapEnumsToCodes.tamanho[produto.tamanho],
     lamina1: mapEnumsToCodes.rotulo[produto.rotulo],
     lamina2: mapEnumsToCodes.tipo_embalagem[produto.tipo_embalagem],
-    lamina3: mapEnumsToCodes.cor_tampa[produto.cor_tampa],
+    cor: mapEnumsToCodes.cor_tampa[produto.cor_tampa],
     padrao1:
       mapEnumsToCodes.acabamento_superficie[produto.acabamento_superficie],
   };
@@ -41,7 +41,7 @@ class ProdutoController {
       descricao.trim() === "" ||
       imagem.trim() === "" ||
       !["Pequeno", "Médio", "Grande"].includes(tamanho) ||
-      !["Sem rótulo", "Padrão", "Personalizado"].includes(rotulo) ||
+      !["Sem rótulo", "Preto", "Branco"].includes(rotulo) ||
       !["Vidro", "Plástico", "Acrílico"].includes(tipo_embalagem) ||
       !["Verde", "Laranja", "Roxo"].includes(cor_tampa) ||
       !["Fosco", "Brilhante", "Texturizado"].includes(acabamento_superficie)

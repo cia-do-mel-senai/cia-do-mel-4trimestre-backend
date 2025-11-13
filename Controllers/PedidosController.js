@@ -17,19 +17,64 @@ class PedidosController {
     }
 
     try {
-      await pool.query(
+      const produtoDoPedido = await pool.query(
+        "SELECT * FROM produtos WHERE id = $1",
+        [produtoId]
+      );
+      let produto;
+
+      if (produtoDoPedido.rowCount === 0) {
+        return res.status(404).json({ error: "Produto não encontrado" });
+      } else {
+        produto = produtoDoPedido.rows[0];
+      }
+
+      const pedido = await pool.query(
         `INSERT INTO pedidos 
           (codigo_pedido, gestor_id, data_criacao, status, quantidade, produto_id)
-         VALUES ($1, $2, $3, $4, $5, $6)`,
+         VALUES ($1, $2, $3, $4, $5, $6)
+         RETURNING *`,
         [
           Date.now().toString(),
           req.usuario.id,
           new Date(),
-          "Pedido realizado",
+          "Pendente",
           Number(quantidade),
           Number(produtoId),
         ]
       );
+
+      const pedidoBancada = await fetch(
+        "http://52.1.197.112:3000/queue/items",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            payload: {
+              orderId: pedido.rows[0].id,
+              sku: produto.bloco.tamanho,
+              cor: produto.bloco.cor,
+            },
+            callbackUrl: "http://localhost:3333/callback",
+            estoquePos: 26,
+          }),
+        }
+      );
+
+      const respostaBancada = await pedidoBancada.json();
+
+      console.log(respostaBancada.id, pedido.rows[0].id);
+
+      const adicionarIdBancada = await pool.query(
+        `UPDATE pedidos
+         SET pedido_bancada_id = $1
+         WHERE id = $2`,
+        [respostaBancada.id, pedido.rows[0].id]
+      );
+
+      console.log(adicionarIdBancada);
 
       res.status(201).json({ mensagem: "Pedido feito com sucesso" });
     } catch (error) {
@@ -68,6 +113,28 @@ class PedidosController {
          FROM pedidos p
          JOIN produtos pr ON p.produto_id = pr.id`
       );
+
+      // resposta.rows.forEach(async (pedido) => {
+      //   if (pedido.status !== "COMPLETED") {
+      //     const pedidoBancada = await fetch(
+      //       `http://52.1.197.112:3000/queue/items/${pedido.pedido_bancada_id}`,
+      //       { method: "GET", headers: { "Content-Type": "application/json" } }
+      //     );
+
+      //     const respostaBancada = await pedidoBancada.json();
+
+      //     if (pedido.status !== respostaBancada.status) {
+      //       console.log(pedido, respostaBancada);
+
+      //       await pool.query(
+      //         `UPDATE pedidos
+      //          SET status = $1
+      //          WHERE id = $2`,
+      //         [respostaBancada.status || "null na bancada", pedido.id]
+      //       );
+      //     }
+      //   }
+      // });
 
       res.status(200).json(resposta.rows);
     } catch (error) {
