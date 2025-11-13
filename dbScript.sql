@@ -40,7 +40,7 @@ CREATE TABLE pedidos (
     produto_id INTEGER REFERENCES produtos(id),
     data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     status TEXT NOT NULL,
-    quantidade INTEGER NOT NULL
+    quantidade INTEGER NOT NULL,
     pedido_bancada_id TEXT 
 );
 
