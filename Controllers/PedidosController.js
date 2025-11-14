@@ -57,7 +57,7 @@ class PedidosController {
               sku: produto.bloco.tamanho,
               cor: produto.bloco.cor,
             },
-            callbackUrl: "http://localhost:3333/callback",
+            callbackUrl: process.env.CALLBACK_URL,
             estoquePos: 26,
           }),
         }

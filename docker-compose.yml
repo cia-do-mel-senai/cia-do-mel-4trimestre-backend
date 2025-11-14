@@ -1,0 +1,54 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: ciadomel_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: senai
+      POSTGRES_DB: ciadomel
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/sql:/docker-entrypoint-initdb.d
+    networks:
+      - dev-network
+
+  backend:
+    build: ./backend
+    container_name: ciadomel_backend
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_URL: postgresql://postgres:senai@postgres:5432/ciadomel
+      CALLBACK_URL: ${CALLBACK_URL}
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    networks:
+      - dev-network
+    env_file:
+      - ./backend/.env
+
+  frontend:
+    build: ./frontend
+    container_name: ciadomel_frontend
+    depends_on:
+      - backend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    networks:
+      - dev-network
+
+networks:
+  dev-network:
+
+volumes:
+  postgres_data:
