@@ -23,7 +23,7 @@ services:
       - postgres
     environment:
       DATABASE_URL: postgresql://postgres:senai@postgres:5432/ciadomel
-      CALLBACK_URL: ${CALLBACK_URL}
+      API_URL: http://localhost:3000
     ports:
       - "3000:3000"
     volumes:

@@ -57,7 +57,7 @@ class PedidosController {
               sku: produto.bloco.tamanho,
               cor: produto.bloco.cor,
             },
-            callbackUrl: process.env.CALLBACK_URL,
+            callbackUrl: `${process.env.API_URL}/${pedido.rows[0].id}/status`,
             estoquePos: 26,
           }),
         }
