@@ -45,7 +45,7 @@ class PedidosController {
       );
 
       const pedidoBancada = await fetch(
-        "http://52.1.197.112:3000/queue/items",
+        "http://52.72.137.244:3000/queue/items",
         {
           method: "POST",
           headers: {
@@ -113,28 +113,6 @@ class PedidosController {
          FROM pedidos p
          JOIN produtos pr ON p.produto_id = pr.id`
       );
-
-      // resposta.rows.forEach(async (pedido) => {
-      //   if (pedido.status !== "COMPLETED") {
-      //     const pedidoBancada = await fetch(
-      //       `http://52.1.197.112:3000/queue/items/${pedido.pedido_bancada_id}`,
-      //       { method: "GET", headers: { "Content-Type": "application/json" } }
-      //     );
-
-      //     const respostaBancada = await pedidoBancada.json();
-
-      //     if (pedido.status !== respostaBancada.status) {
-      //       console.log(pedido, respostaBancada);
-
-      //       await pool.query(
-      //         `UPDATE pedidos
-      //          SET status = $1
-      //          WHERE id = $2`,
-      //         [respostaBancada.status || "null na bancada", pedido.id]
-      //       );
-      //     }
-      //   }
-      // });
 
       res.status(200).json(resposta.rows);
     } catch (error) {

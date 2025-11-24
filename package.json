@@ -1,6 +1,6 @@
 {
   "name": "cia-do-mel-3trimestre-backend",
-  "version": "5.0.2",
+  "version": "5.0.3",
   "description": "",
   "type": "module",
   "main": "index.js",
