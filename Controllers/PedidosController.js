@@ -109,9 +109,12 @@ class PedidosController {
   async pegarPedidos(req, res) {
     try {
       const resposta = await pool.query(
-        `SELECT p.*, pr.nome AS nome_produto 
-         FROM pedidos p
-         JOIN produtos pr ON p.produto_id = pr.id`
+        `SELECT 
+          p.*, 
+          pr.nome AS nome_produto,
+          pr.preco AS preco_produto
+          FROM pedidos p
+          JOIN produtos pr ON p.produto_id = pr.id;`
       );
 
       res.status(200).json(resposta.rows);

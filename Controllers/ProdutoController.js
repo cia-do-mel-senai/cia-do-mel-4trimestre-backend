@@ -62,10 +62,10 @@ class ProdutoController {
     const bloco = traduzirParaBloco(produto);
 
     try {
-      await pool.query(
+      const produtoNovo = await pool.query(
         `INSERT INTO produtos
         (nome, preco, descricao, imagem, tamanho, rotulo, tipo_embalagem, cor_tampa, acabamento_superficie, bloco)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *`,
         [
           nome,
           preco,
@@ -80,9 +80,10 @@ class ProdutoController {
         ]
       );
 
-      return res
-        .status(201)
-        .json({ mensagem: "Produto cadastrado com sucesso." });
+      return res.status(201).json({
+        mensagem: "Produto cadastrado com sucesso.",
+        produto: produtoNovo.rows[0],
+      });
     } catch (error) {
       console.log(error);
       return res.status(500).json({ erro: "Erro interno no servidor" });
