@@ -55,10 +55,8 @@ class PedidosController {
             payload: {
               orderId: pedido.rows[0].id,
               sku: produto.bloco.tamanho,
-              cor: produto.bloco.cor,
             },
             callbackUrl: `${process.env.API_URL}/${pedido.rows[0].id}/status`,
-            estoquePos: 26,
           }),
         }
       );
